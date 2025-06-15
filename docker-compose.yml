@@ -92,8 +92,8 @@ services:
     networks:
       - backend
 
-  migrations:
-    build: ./migrations
+  database-migrator:
+    build: ./src/DatabaseMigrator
     depends_on:
       - postgres
     networks:

@@ -19,7 +19,7 @@ This repository contains a skeleton implementation of the Gringotts banking appl
 - `ExchangeRateService`
 - `ApiGateway`
 - `Frontend`
-- `Migrations`
+- `DatabaseMigrator`
 
 ## Running
 
@@ -33,7 +33,7 @@ This will build all services, start PostgreSQL, RabbitMQ, and the monitoring sta
 
 - `src/` - .NET microservices
 - `frontend/` - Angular frontend (placeholder)
-- `migrations/` - database migration scripts
+- `src/DatabaseMigrator/` - microservice applying EF Core migrations
 - `monitoring/` - Prometheus configuration
 - `tests/` - placeholder for unit and integration tests
 
@@ -41,5 +41,5 @@ Each microservice is intentionally small to keep the repository clean and focuse
 
 ## Database Migrations
 
-Database schema migrations are located in the `migrations/` directory. The `migrations` container uses a simple shell script to apply the SQL script against the PostgreSQL service when `docker-compose up` is run. The default script `001_init.sql` creates the initial tables used by all services.
+Database schema changes are managed using Entity Framework Core. The `database-migrator` service runs at startup and applies any pending migrations to the PostgreSQL database using `DbContext.Database.Migrate()`.
 
