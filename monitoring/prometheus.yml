@@ -1,0 +1,4 @@
+scrape_configs:
+  - job_name: 'dotnet-services'
+    static_configs:
+      - targets: ['users-service:80','transactions-publisher:80','transactions-consumer:80','recurring-transactions-service:80','currency-conversion-service:80','exchange-rate-service:80','api-gateway:80']

@@ -1,0 +1,9 @@
+bin/
+obj/
+*.user
+*.suo
+*.swp
+.dockerignore
+node_modules/
+.env
+.idea/
