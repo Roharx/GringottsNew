@@ -3,4 +3,5 @@ RUN apt-get update && apt-get install -y postgresql-client && rm -rf /var/lib/ap
 WORKDIR /app
 COPY . .
 RUN chmod +x run_migrations.sh
-ENTRYPOINT ["./run_migrations.sh"]
+# Use absolute path in the entrypoint to avoid path issues during startup
+ENTRYPOINT ["/bin/bash", "/app/run_migrations.sh"]
