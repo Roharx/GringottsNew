@@ -1,9 +1,28 @@
-using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Npgsql;
+using Gringotts.Migrations;
 using System;
 using System.Threading.Tasks;
+
+var host = Host.CreateDefaultBuilder(args)
+    .ConfigureServices((ctx, services) =>
+    {
+        var connection = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION") ??
+            "Host=postgres;Username=gringotts;Password=secret;Database=gringotts";
+        services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connection));
+    })
+    .Build();
+
+using var scope = host.Services.CreateScope();
+var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+await WaitForDatabaseAsync(scope.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("Migrator"));
+
+// Apply migrations (will create DB if it does not exist)
+db.Database.Migrate();
 
 static async Task WaitForDatabaseAsync(ILogger logger)
 {
@@ -27,13 +46,3 @@ static async Task WaitForDatabaseAsync(ILogger logger)
     }
     throw new Exception("Unable to connect to database");
 }
-
-var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddControllers();
-var app = builder.Build();
-
-await WaitForDatabaseAsync(app.Logger);
-
-app.MapGet("/", () => "Hello from UsersService!");
-
-app.Run();

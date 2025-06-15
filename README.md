@@ -19,7 +19,7 @@ This repository contains a skeleton implementation of the Gringotts banking appl
 - `ExchangeRateService`
 - `ApiGateway`
 - `Frontend`
-- `Migrations`
+- `DatabaseMigrator`
 
 ## Running
 
@@ -27,14 +27,36 @@ This repository contains a skeleton implementation of the Gringotts banking appl
 docker-compose up --build
 ```
 
-This will build all services, start PostgreSQL, RabbitMQ, and the monitoring stack.
+Copy the provided `.env` file to your environment (or adjust the values) before
+running Docker Compose. It defines the shared database and RabbitMQ settings
+used by several services.
+
+When running commands like `dotnet ef database update` from your host machine
+instead of inside Docker, adjust the `POSTGRES_CONNECTION` variable to point to
+`localhost` rather than the Docker service name `postgres`.
+
+This command builds all services, starts PostgreSQL, RabbitMQ, and the
+monitoring stack.
 
 ## Directory Structure
 
 - `src/` - .NET microservices
 - `frontend/` - Angular frontend (placeholder)
-- `migrations/` - database migration scripts
+- `src/DatabaseMigrator/` - microservice applying EF Core migrations
 - `monitoring/` - Prometheus configuration
-- `tests/` - placeholder for unit and integration tests
+- `tests/` - xUnit integration tests validating the database schema
 
 Each microservice is intentionally small to keep the repository clean and focused on fault isolation.
+
+## Database Migrations
+
+Database schema changes are managed using Entity Framework Core. The `database-migrator` service runs at startup and applies any pending migrations to the PostgreSQL database using `DbContext.Database.Migrate()`.
+
+All services that depend on the database perform a simple connection check with retries at startup. This allows Docker Compose to bring up PostgreSQL and the services in any order.
+
+Run integration tests to verify the schema has been applied:
+
+```bash
+dotnet test tests/DatabaseTests/DatabaseTests.csproj
+```
+
