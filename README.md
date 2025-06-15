@@ -31,6 +31,10 @@ Copy the provided `.env` file to your environment (or adjust the values) before
 running Docker Compose. It defines the shared database and RabbitMQ settings
 used by several services.
 
+When running commands like `dotnet ef database update` from your host machine
+instead of inside Docker, adjust the `POSTGRES_CONNECTION` variable to point to
+`localhost` rather than the Docker service name `postgres`.
+
 This command builds all services, starts PostgreSQL, RabbitMQ, and the
 monitoring stack.
 
