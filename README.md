@@ -38,3 +38,8 @@ This will build all services, start PostgreSQL, RabbitMQ, and the monitoring sta
 - `tests/` - placeholder for unit and integration tests
 
 Each microservice is intentionally small to keep the repository clean and focused on fault isolation.
+
+## Database Migrations
+
+Database schema migrations are located in the `migrations/` directory. The `migrations` container uses a simple shell script to apply the SQL script against the PostgreSQL service when `docker-compose up` is run. The default script `001_init.sql` creates the initial tables used by all services.
+
