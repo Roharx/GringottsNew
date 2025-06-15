@@ -5,5 +5,5 @@ obj/
 *.swp
 .dockerignore
 node_modules/
-.env
+# Environment variable file included for docker-compose
 .idea/

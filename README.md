@@ -27,7 +27,12 @@ This repository contains a skeleton implementation of the Gringotts banking appl
 docker-compose up --build
 ```
 
-This will build all services, start PostgreSQL, RabbitMQ, and the monitoring stack.
+Copy the provided `.env` file to your environment (or adjust the values) before
+running Docker Compose. It defines the shared database and RabbitMQ settings
+used by several services.
+
+This command builds all services, starts PostgreSQL, RabbitMQ, and the
+monitoring stack.
 
 ## Directory Structure
 

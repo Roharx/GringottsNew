@@ -3,8 +3,9 @@ services:
   postgres:
     image: postgres:15
     environment:
-      POSTGRES_USER: gringotts
-      POSTGRES_PASSWORD: secret
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - db-data:/var/lib/postgresql/data
     networks:
@@ -45,6 +46,8 @@ services:
     build: ./src/UsersService
     depends_on:
       - postgres
+    environment:
+      POSTGRES_CONNECTION: ${POSTGRES_CONNECTION}
     networks:
       - backend
 
@@ -52,6 +55,8 @@ services:
     build: ./src/TransactionsPublisher
     depends_on:
       - rabbitmq
+    environment:
+      RABBITMQ_URL: ${RABBITMQ_URL}
     networks:
       - backend
 
@@ -60,11 +65,16 @@ services:
     depends_on:
       - rabbitmq
       - postgres
+    environment:
+      RABBITMQ_URL: ${RABBITMQ_URL}
+      POSTGRES_CONNECTION: ${POSTGRES_CONNECTION}
     networks:
       - backend
 
   recurring-transactions-service:
     build: ./src/RecurringTransactionsService
+    environment:
+      POSTGRES_CONNECTION: ${POSTGRES_CONNECTION}
     networks:
       - backend
 
@@ -96,6 +106,8 @@ services:
     build: ./src/DatabaseMigrator
     depends_on:
       - postgres
+    environment:
+      POSTGRES_CONNECTION: ${POSTGRES_CONNECTION}
     networks:
       - backend
 
